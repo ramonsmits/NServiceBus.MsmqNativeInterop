@@ -36,11 +36,9 @@ class Sender
                 json.Write(message, claim);
 
                 // Set the message headers
-                List<HeaderInfo> headers = new List<HeaderInfo>
+                var headers = new List<HeaderInfo>
                 {
-                    new HeaderInfo {Key = "NServiceBus.ContentType", Value = "application/json"},
                     new HeaderInfo {Key = "NServiceBus.EnclosedMessageTypes", Value = typeof(MyMessage).FullName},
-                    new HeaderInfo {Key = "NServiceBus.MessageIntent", Value = "Send"}
                 };
 
                 message.Extension = CreateHeaders(headers);
