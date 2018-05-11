@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Messaging;
-using NServiceBus;
-using NServiceBus.Transport.Msmq;
 using V1.Messages.Commands;
 
 class Sender
@@ -40,7 +38,7 @@ class Sender
                 // Set the message headers
                 List<HeaderInfo> headers = new List<HeaderInfo>
                 {
-                    new HeaderInfo {Key = "NServiceBus.ContentType", Value = ContentTypes.Json},
+                    new HeaderInfo {Key = "NServiceBus.ContentType", Value = "application/json"},
                     new HeaderInfo {Key = "NServiceBus.EnclosedMessageTypes", Value = typeof(MyMessage).FullName},
                     new HeaderInfo {Key = "NServiceBus.MessageIntent", Value = "Send"}
                 };
@@ -55,7 +53,8 @@ class Sender
             }
         }
     }
-    public static byte[] CreateHeaders(List<HeaderInfo> headerInfos)
+
+    static byte[] CreateHeaders(List<HeaderInfo> headerInfos)
     {
         var serializer = new System.Xml.Serialization.XmlSerializer(typeof(List<HeaderInfo>));
         using (var stream = new MemoryStream())
@@ -64,4 +63,5 @@ class Sender
             return stream.ToArray();
         }
     }
+
 }
