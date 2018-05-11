@@ -25,30 +25,19 @@ class Sender
                 At = DateTime.UtcNow
             };
 
-            // Create a message queuing transaction.
-            using (var transaction = new MessageQueueTransaction())
-            {
-                // Begin a transaction.
-                transaction.Begin();
+            var message = new Message();
+            var json = new JsonMessageFormatter();
+            json.Write(message, claim);
 
-                var message = new Message();
-                var json = new JsonMessageFormatter();
-                json.Write(message, claim);
-
-                // Set the message headers
-                var headers = new List<HeaderInfo>
+            // Set the message headers
+            var headers = new List<HeaderInfo>
                 {
                     new HeaderInfo {Key = "NServiceBus.EnclosedMessageTypes", Value = typeof(MyMessage).FullName},
                 };
 
-                message.Extension = CreateHeaders(headers);
+            message.Extension = CreateHeaders(headers);
 
-                // Send the message
-                messageQueue.Send(message, transaction);
-
-                // Commit the transaction.
-                transaction.Commit();
-            }
+            messageQueue.Send(message, MessageQueueTransactionType.Single);
         }
     }
 
